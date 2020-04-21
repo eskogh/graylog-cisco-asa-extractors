@@ -1,80 +1,5 @@
-
+{
   "extractors": [
-    {
-      "title": "ASA UDP Denies",
-      "extractor_type": "grok",
-      "converters": [],
-      "order": 0,
-      "cursor_strategy": "copy",
-      "source_field": "message",
-      "target_field": "",
-      "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{WORD:asa_proto} src %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} dst %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} by access-group %{QUOTEDSTRING:asa_accesslist}",
-        "named_captures_only": true
-      },
-      "condition_type": "regex",
-      "condition_value": "ASA-\\d-106023: Deny udp"
-    },
-    {
-      "title": "ASA TCP Denies",
-      "extractor_type": "grok",
-      "converters": [],
-      "order": 0,
-      "cursor_strategy": "copy",
-      "source_field": "message",
-      "target_field": "",
-      "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{WORD:asa_proto} src %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} dst %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} by access-group %{QUOTEDSTRING:asa_accesslist}",
-        "named_captures_only": true
-      },
-      "condition_type": "regex",
-      "condition_value": "ASA-\\d-106023: Deny tcp"
-    },
-    {
-      "title": "ASA ICMP Denies",
-      "extractor_type": "grok",
-      "converters": [],
-      "order": 0,
-      "cursor_strategy": "copy",
-      "source_field": "message",
-      "target_field": "",
-      "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{WORD:asa_proto} src %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip} dst %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip} \\(type %{BASE10NUM:asa_icmp_type}, code %{BASE10NUM:asa_icmp_code}\\) by access-group %{QUOTEDSTRING:asa_accesslist}",
-        "named_captures_only": true
-      },
-      "condition_type": "regex",
-      "condition_value": "ASA-4-106023: Deny icmp src "
-    },
-    {
-      "title": "ASA TCP Drops",
-      "extractor_type": "grok",
-      "converters": [],
-      "order": 0,
-      "cursor_strategy": "copy",
-      "source_field": "message",
-      "target_field": "",
-      "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{WORD:asa_proto} %{DATA:asa_message} from %{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} to %{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} flags %{DATA:tcpflags} on interface %{DATA:asa_interface_in}$",
-        "named_captures_only": true
-      },
-      "condition_type": "regex",
-      "condition_value": "ASA-\\d-106015: Deny TCP"
-    },
-    {
-      "title": "ASA TCP Denied by security policy",
-      "extractor_type": "grok",
-      "converters": [],
-      "order": 0,
-      "cursor_strategy": "copy",
-      "source_field": "message",
-      "target_field": "",
-      "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{WORD:asa_proto} connection denied from %{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} to %{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} flags %{WORD:asa_flags}  on interface %{NOTSPACE:asa_interface}",
-        "named_captures_only": true
-      },
-      "condition_type": "regex",
-      "condition_value": "ASA-2-106001: Inbound TCP connection denied"
-    },
     {
       "title": "ASA Login Failed",
       "extractor_type": "grok",
@@ -84,7 +9,7 @@
       "source_field": "message",
       "target_field": "",
       "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: User authentication failed:",
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: User authentication failed:",
         "named_captures_only": true
       },
       "condition_type": "regex",
@@ -99,11 +24,56 @@
       "source_field": "message",
       "target_field": "",
       "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: User authentication succeeded:",
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: User authentication succeeded:",
         "named_captures_only": true
       },
       "condition_type": "regex",
       "condition_value": "ASA-\\d-611101: User authentication succeeded:"
+    },
+    {
+      "title": "ASA TCP Denies",
+      "extractor_type": "grok",
+      "converters": [],
+      "order": 0,
+      "cursor_strategy": "copy",
+      "source_field": "message",
+      "target_field": "",
+      "extractor_config": {
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{WORD:asa_proto} src %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} dst %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} by access-group %{QUOTEDSTRING:asa_accesslist}",
+        "named_captures_only": true
+      },
+      "condition_type": "regex",
+      "condition_value": "ASA-\\d-106023: Deny tcp"
+    },
+    {
+      "title": "ASA ICMP Denies",
+      "extractor_type": "grok",
+      "converters": [],
+      "order": 0,
+      "cursor_strategy": "copy",
+      "source_field": "message",
+      "target_field": "",
+      "extractor_config": {
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{WORD:asa_proto} src %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip} dst %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip} \\(type %{BASE10NUM:asa_icmp_type}, code %{BASE10NUM:asa_icmp_code}\\) by access-group %{QUOTEDSTRING:asa_accesslist}",
+        "named_captures_only": true
+      },
+      "condition_type": "regex",
+      "condition_value": "ASA-4-106023: Deny icmp src "
+    },
+    {
+      "title": "ASA TCP Denied by security policy",
+      "extractor_type": "grok",
+      "converters": [],
+      "order": 0,
+      "cursor_strategy": "copy",
+      "source_field": "message",
+      "target_field": "",
+      "extractor_config": {
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{WORD:asa_proto} connection denied from %{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} to %{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} flags %{WORD:asa_flags}  on interface %{NOTSPACE:asa_interface}",
+        "named_captures_only": true
+      },
+      "condition_type": "regex",
+      "condition_value": "ASA-2-106001: Inbound TCP connection denied"
     },
     {
       "title": "ASA TCP access denied by ACL",
@@ -114,14 +84,14 @@
       "source_field": "message",
       "target_field": "",
       "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: TCP access denied by ACL from %{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} to %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port}",
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: TCP access denied by ACL from %{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} to %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port}",
         "named_captures_only": true
       },
       "condition_type": "regex",
       "condition_value": "ASA-3-710003: TCP access denied by ACL"
     },
     {
-      "title": "ASA ICMP Connection Teardown",
+      "title": "ASA UDP Denies",
       "extractor_type": "grok",
       "converters": [],
       "order": 0,
@@ -129,11 +99,26 @@
       "source_field": "message",
       "target_field": "",
       "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{WORD:asa_proto} connection for faddr %{IPV4:asa_faddr}/%{INT} gaddr %{IPV4:asa_gaddr}/%{INT} laddr %{IPORHOST:asa_laddr}/%{INT} type %{INT:asa_icmp_type} code %{INT:asa_icmp_code}",
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{WORD:asa_proto} src %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} dst %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} by access-group %{QUOTEDSTRING:asa_accesslist}",
         "named_captures_only": true
       },
       "condition_type": "regex",
-      "condition_value": "ASA-6-302021: Teardown ICMP connection"
+      "condition_value": "ASA-\\d-106023: Deny udp"
+    },
+    {
+      "title": "ASA TCP Drops",
+      "extractor_type": "grok",
+      "converters": [],
+      "order": 0,
+      "cursor_strategy": "copy",
+      "source_field": "message",
+      "target_field": "",
+      "extractor_config": {
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{WORD:asa_proto} %{DATA:asa_message} from %{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} to %{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} flags %{DATA:tcpflags} on interface %{DATA:asa_interface_in}$",
+        "named_captures_only": true
+      },
+      "condition_type": "regex",
+      "condition_value": "ASA-\\d-106015: Deny TCP"
     },
     {
       "title": "ASA ICMP Connection Built",
@@ -144,11 +129,26 @@
       "source_field": "message",
       "target_field": "",
       "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{NOTSPACE:asa_direction} %{WORD:asa_proto} connection for faddr %{IPV4:asa_faddr}/%{INT} gaddr %{IPV4:asa_gaddr}/%{INT} laddr %{IPV4:asa_gaddr}/%{INT} type %{INT:asa_icmp_type} code %{INT:asa_icmp_code}",
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{NOTSPACE:asa_direction} %{WORD:asa_proto} connection for faddr %{IPV4:asa_faddr}/%{INT} gaddr %{IPV4:asa_gaddr}/%{INT} laddr %{IPV4:asa_gaddr}/%{INT} type %{INT:asa_icmp_type} code %{INT:asa_icmp_code}",
         "named_captures_only": true
       },
       "condition_type": "regex",
       "condition_value": "ASA-6-302020: Built (\\w+) ICMP"
+    },
+    {
+      "title": "ASA ICMP Connection Teardown",
+      "extractor_type": "grok",
+      "converters": [],
+      "order": 0,
+      "cursor_strategy": "copy",
+      "source_field": "message",
+      "target_field": "",
+      "extractor_config": {
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{WORD:asa_proto} connection for faddr %{IPV4:asa_faddr}/%{INT} gaddr %{IPV4:asa_gaddr}/%{INT} laddr %{IPORHOST:asa_laddr}/%{INT} type %{INT:asa_icmp_type} code %{INT:asa_icmp_code}",
+        "named_captures_only": true
+      },
+      "condition_type": "regex",
+      "condition_value": "ASA-6-302021: Teardown ICMP connection"
     },
     {
       "title": "ASA dynamic TCP/UDP translation",
@@ -159,7 +159,7 @@
       "source_field": "message",
       "target_field": "",
       "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{NOTSPACE:asa_direction} %{WORD:asa_proto} translation from %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} to %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port}",
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{NOTSPACE:asa_direction} %{WORD:asa_proto} translation from %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} to %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port}",
         "named_captures_only": true
       },
       "condition_type": "regex",
@@ -174,7 +174,7 @@
       "source_field": "message",
       "target_field": "",
       "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{NOTSPACE:asa_direction} %{WORD:asa_proto} translation from %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} to %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} duration %{TIME:asa_conn_duration}",
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{NOTSPACE:asa_direction} %{WORD:asa_proto} translation from %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} to %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} duration %{TIME:asa_conn_duration}",
         "named_captures_only": true
       },
       "condition_type": "regex",
@@ -189,7 +189,7 @@
       "source_field": "message",
       "target_field": "",
       "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: AAA user authentication %{WORD:asa_aaa_authentication} : server =  %{IPV4:asa_sat_ip} : user = %{NOTSPACE:asa_aaa_username}",
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: AAA user authentication %{WORD:asa_aaa_authentication} : server =  %{IPV4:asa_sat_ip} : user = %{NOTSPACE:asa_aaa_username}",
         "named_captures_only": true
       },
       "condition_type": "regex",
@@ -204,7 +204,7 @@
       "source_field": "message",
       "target_field": "",
       "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: AAA user authentication %{WORD:asa_aaa_authentication} : reason = %{DATA:asa_aaa_reason} : server = %{IPV4:asa_sat_ip} : user = %{NOTSPACE:asa_aaa_username} : user IP = %{IPV4:asa_src_ip}",
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: AAA user authentication %{WORD:asa_aaa_authentication} : reason = %{DATA:asa_aaa_reason} : server = %{IPV4:asa_sat_ip} : user = %{NOTSPACE:asa_aaa_username} : user IP = %{IPV4:asa_src_ip}",
         "named_captures_only": true
       },
       "condition_type": "regex",
@@ -219,7 +219,7 @@
       "source_field": "message",
       "target_field": "",
       "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{NOTSPACE:asa_direction} %{WORD:asa_proto} connection %{BASE10NUM:asa_conn_id} for %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} \\(%{IPV4:asa_mapped_src_ip}/%{BASE10NUM:asa_mapped_src_port}\\)(.*) to %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} \\(%{IPV4:asa_mapped_dst_ip}/%{BASE10NUM:asa_mapped_dst_port}\\)",
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{NOTSPACE:asa_direction} %{WORD:asa_proto} connection %{BASE10NUM:asa_conn_id} for %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} \\(%{IPV4:asa_mapped_src_ip}/%{BASE10NUM:asa_mapped_src_port}\\)(.*) to %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} \\(%{IPV4:asa_mapped_dst_ip}/%{BASE10NUM:asa_mapped_dst_port}\\)",
         "named_captures_only": true
       },
       "condition_type": "regex",
@@ -234,7 +234,7 @@
       "source_field": "message",
       "target_field": "",
       "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{WORD:asa_proto} connection %{BASE10NUM:asa_conn_id} for %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port}(.*) to %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} duration %{TIME:asa_conn_duration} bytes %{BASE10NUM:asa_conn_bytes;long}",
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{WORD:asa_proto} connection %{BASE10NUM:asa_conn_id} for %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port}(.*) to %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} duration %{TIME:asa_conn_duration} bytes %{BASE10NUM:asa_conn_bytes;long}",
         "named_captures_only": true
       },
       "condition_type": "regex",
@@ -249,11 +249,26 @@
       "source_field": "message",
       "target_field": "",
       "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{NOTSPACE:asa_direction} %{WORD:asa_proto} connection %{BASE10NUM:asa_conn_id} for %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} \\(%{IPV4:asa_mapped_src_ip}/%{BASE10NUM:asa_mapped_src_port}\\)(.*) to %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} \\(%{IPV4:asa_mapped_dst_ip}/%{BASE10NUM:asa_mapped_dst_port}\\)",
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{NOTSPACE:asa_direction} %{WORD:asa_proto} connection %{BASE10NUM:asa_conn_id} for %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port} \\(%{IPV4:asa_mapped_src_ip}/%{BASE10NUM:asa_mapped_src_port}\\)(.*) to %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} \\(%{IPV4:asa_mapped_dst_ip}/%{BASE10NUM:asa_mapped_dst_port}\\)",
         "named_captures_only": true
       },
       "condition_type": "regex",
       "condition_value": "^.*: %ASA-6-302013: Built (.+) TCP connection"
+    },
+    {
+      "title": "ASA DHCP daemon",
+      "extractor_type": "grok",
+      "converters": [],
+      "order": 0,
+      "cursor_strategy": "copy",
+      "source_field": "message",
+      "target_field": "",
+      "extractor_config": {
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: %{DATA:asa_service} interface %{NOTSPACE:asa_interface}:  address %{WORD:UNWANTED} %{DATA:asa_mac_address} \\(%{IPV4:asa_addr}\\)",
+        "named_captures_only": true
+      },
+      "condition_type": "regex",
+      "condition_value": "^.*: %ASA-6-604103: DHCP daemon"
     },
     {
       "title": "ASA UDP Connection Teardown",
@@ -264,7 +279,7 @@
       "source_field": "message",
       "target_field": "",
       "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{WORD:asa_proto} connection %{BASE10NUM:asa_conn_id} for %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port}(.*) to %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} duration %{TIME:asa_conn_duration} bytes %{BASE10NUM:asa_conn_bytes;long}"
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: %{WORD:asa_action} %{WORD:asa_proto} connection %{BASE10NUM:asa_conn_id} for %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip}/%{BASE10NUM:asa_src_port}(.*) to %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip}/%{BASE10NUM:asa_dst_port} duration %{TIME:asa_conn_duration} bytes %{BASE10NUM:asa_conn_bytes;long}"
       },
       "condition_type": "regex",
       "condition_value": "ASA-6-302016: Teardown UDP connection"
@@ -278,27 +293,12 @@
       "source_field": "message",
       "target_field": "",
       "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: No matching connection for %{WORD} %{WORD:asa_severity} message: %{WORD:asa_proto} src %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip} dst %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip} \\(%{GREEDYDATA:type_code}\\) on %{NOTSPACE} interface.  Original IP payload: %{GREEDYDATA:asa_orig_ip_payload}.",
+        "grok_pattern": "%{HOSTNAME:source} : .ASA-\\d-%{WORD:asa_messageid:int}: No matching connection for %{WORD} %{WORD:asa_severity} message: %{WORD:asa_proto} src %{NOTSPACE:asa_interface_in}:%{IPV4:asa_src_ip} dst %{NOTSPACE:asa_interface_out}:%{IPV4:asa_dst_ip} \\(%{GREEDYDATA:type_code}\\) on %{NOTSPACE} interface.  Original IP payload: %{GREEDYDATA:asa_orig_ip_payload}.",
         "named_captures_only": true
       },
       "condition_type": "regex",
       "condition_value": "^.*: %ASA-4-313005: (.+) ICMP error message"
-    },
-    {
-      "title": "ASA DHCP daemon",
-      "extractor_type": "grok",
-      "converters": [],
-      "order": 0,
-      "cursor_strategy": "copy",
-      "source_field": "message",
-      "target_field": "",
-      "extractor_config": {
-        "grok_pattern": "ASA-\\d-%{WORD:asa_messageid:int}: %{DATA:asa_service} interface %{NOTSPACE:asa_interface}:  address %{WORD:UNWANTED} %{DATA:asa_mac_address} \\(%{IPV4:asa_addr}\\)",
-        "named_captures_only": true
-      },
-      "condition_type": "regex",
-      "condition_value": "^.*: %ASA-6-604103: DHCP daemon"
     }
   ],
-  "version": "3.2.1"
+  "version": "3.1.2"
 }
